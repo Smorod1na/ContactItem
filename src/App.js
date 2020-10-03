@@ -13,6 +13,7 @@ import GroupsList from './Components/ContactItem/GroupsList/GroupsList'
 import GroupItem from './Components/ContactItem/GroupsList/GroupItem/GroupItem'
 import GroupsPanel from './Components/ContactItem/GroupPanel/GroupPanel'
 import AddGroup from './Components/ContactItem/AddGroup/AddGroup'
+import RemoveGroup from './Components/ContactItem/RemoveGroup/RemoveGroup'
 class App extends Component {
   state = {
     List:[
@@ -143,16 +144,6 @@ const newContact={
       List:tempList
   });
   }
-// addContact(obj){
-
-//   let tempList=this.state.List.slice();
-//   obj.id=uuid();
-//   tempList.push(obj)
-//   this.saveChanges(tempList)
-//   this.setState({
-//     List:tempList
-// });
-// }
 
 removeContact=(id)=>{
   const tempList2=this.state.List;
@@ -246,8 +237,20 @@ this.setState({
 })
 }
 
+removeGroup=(name)=>{
+const newListGroup=this.state.Groups.slice();
+const tempList=this.state.List.filter(item=>{
+  if(item.group!=name)
+  return item
+});
+const indexRemoveElement=newListGroup.findIndex(item=>item.name===name);
+newListGroup.splice(indexRemoveElement,1);
+this.setState({
+  List:tempList,
+  Groups:newListGroup
+})
+}
   render() {
-    // let model
     return (
       <Fragment>
 
@@ -266,6 +269,7 @@ this.setState({
                 <Link className="nav-item nav-link" to="/addContact">Add contact</Link>
                 <Link className="nav-item nav-link" to="/groups">Groups</Link>
                 <Link className="nav-item nav-link" to="/addgroups">AddGroups</Link>
+                <Link className="nav-item nav-link" to="/removegroups">Remove group</Link>
 
               </div>
               <form class="form-inline my-2 my-lg-0">
@@ -346,6 +350,19 @@ addGroup={this.addGroup.bind(this)}
 >
   
 </AddGroup>}>
+   
+</Route>
+
+
+<Route path="/removegroups"
+exact
+ render={()=>
+<RemoveGroup
+ Groups={this.state.Groups}
+ removeGroup={this.removeGroup.bind(this)}
+>
+  
+</RemoveGroup>}>
    
 </Route>
 <Route path="*"
