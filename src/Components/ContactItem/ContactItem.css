@@ -1,0 +1,16 @@
+.icon{
+    color:rgb(218, 218, 26);
+}
+.trash{
+    color: tomato;
+}
+i{
+    margin:10px;
+    margin-top: 20px;
+}
+.btnMb{
+margin-bottom: 15px;
+}
+.edit{
+    color:green;
+}
