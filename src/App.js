@@ -9,42 +9,62 @@ import AddContact from './Components/ContactItem/AddContact/AddContact';
 import uuid from "react-uuid";
 import EditContact from './Components/ContactItem/EditContact/EditContact';
 import SearchContact from'./Components/ContactItem/SearchContact/SearchContact'
+import GroupsList from './Components/ContactItem/GroupsList/GroupsList'
+import GroupItem from './Components/ContactItem/GroupsList/GroupItem/GroupItem'
+import GroupsPanel from './Components/ContactItem/GroupPanel/GroupPanel'
+import AddGroup from './Components/ContactItem/AddGroup/AddGroup'
 class App extends Component {
   state = {
     List:[
-      // {
-      //   id:1,
-      //   name:"Sasha Lozovitskiy",
-      //   phone:"0982509534",
-      //   email:"lozovitskii1991@gmail.com",
-      //   address:"Bukovinska street",
-      //   gender:"men",
-      //   avatar:25,
-      //   isFavorite:false
-      // },
-      // {
-      //   id:2,
-      //   name:"Vika Pulina",
-      //   phone:"0982509534",
-      //   email:"vika@gmail.com",
-      //   address:"Bukovinska street",
-      //   gender:"women",
-      //   avatar:35,
-      //   isFavorite:false
-      // },
-      // {
-      //   id:3,
-      //   name:"Vitya Poszikov",
-      //   phone:"0982509534",
-      //   email:"vitya@gmail.com",
-      //   address:"Bukovinska street",
-      //   gender:"men",
-      //   avatar:25,
-      //   isFavorite:true
-      // }
+      {
+        id:1,
+        name:"Sasha Lozovitskiy",
+        phone:"0982509534",
+        email:"lozovitskii1991@gmail.com",
+        address:"Bukovinska street",
+        gender:"men",
+        avatar:25,
+        isFavorite:false,
+        group:"No group"
+      },
+      {
+        id:2,
+        name:"Vika Pulina",
+        phone:"0982509534",
+        email:"vika@gmail.com",
+        address:"Bukovinska street",
+        gender:"women",
+        avatar:35,
+        isFavorite:false,
+        group:"Group1"
+      },
+      {
+        id:3,
+        name:"Vitya Poszikov",
+        phone:"0982509534",
+        email:"vitya@gmail.com",
+        address:"Bukovinska street",
+        gender:"men",
+        avatar:25,
+        isFavorite:true,
+        group:"No group"
+      }
     ],
     currentContact:null,
-    allContact:[]
+    allContact:[],
+    Groups:[{
+      name:"No group"
+    },{
+      name:"Group1"
+    },
+    {
+      name:"Group2"
+    }
+  ,
+  {
+    name:"Group3"
+  }
+    ]
   }
 
 URL="https://contactbook-9f583.firebaseio.com/list.json"
@@ -68,7 +88,12 @@ fetch(this.URL,{method:"GET"})
 
 // PRU STARTI PROEKTU
 componentDidMount(){
-  this.getContacts();
+  if(this.state.allContact.length==0)
+ {const contact=this.state.List.slice()
+ this.setState({
+  allContact:contact
+})}
+  // this.getContacts();
 }
 
 async saveChanges(ListData){
@@ -149,19 +174,26 @@ const currentContact=this.state.List[index];
 
 searchContacts=(text)=>{
  
+
   if(text=="")
-  this.getContacts();
+  // this.getContacts();
+  {
+    const contact3=this.state.allContact.slice()
+    this.setState({
+      List:contact3
+    })}
+  
   else
  {
   // this.getContacts()
-    const contact=this.state.allContact.filter(
+    const contact2=this.state.allContact.filter(
     x=>{
     if(x.name.toLowerCase().includes(text))
     return x;
   })
 
   this.setState({
-    List:contact
+    List:contact2
   })
 }
 }
@@ -191,6 +223,29 @@ this.setState({
 this.saveChanges()
 
 }
+
+changeGroup=(id,group)=>{
+let tempList=this.state.List.map(item=>{
+  if(item.id==id)
+  item.group=group
+  return item;
+})
+this.setState({
+  List:tempList
+})
+}
+
+addGroup=(groupName)=>{
+  const newgroup={
+    name:groupName
+  }
+let tempGroup=this.state.Groups.slice();
+tempGroup.push(newgroup)
+this.setState({
+  Groups:tempGroup
+})
+}
+
   render() {
     // let model
     return (
@@ -209,6 +264,9 @@ this.saveChanges()
                 <Link className="nav-item nav-link active" to="/">Contact list</Link>
                 <Link className="nav-item nav-link" to="/favoriteContact">Favorite contact</Link>
                 <Link className="nav-item nav-link" to="/addContact">Add contact</Link>
+                <Link className="nav-item nav-link" to="/groups">Groups</Link>
+                <Link className="nav-item nav-link" to="/addgroups">AddGroups</Link>
+
               </div>
               <form class="form-inline my-2 my-lg-0">
 <SearchContact
@@ -224,9 +282,11 @@ searchContacts={this.searchContacts.bind(this)}>
              render={()=>
               <ContactList
               DataContact={this.state.List}
+              Groups={this.state.Groups}
               changeFavorite={this.changeFavorite.bind(this)}
               removeContact={this.removeContact.bind(this)}
               editContact={this.editContact.bind(this)}
+              changeGroup={this.changeGroup}
               ></ContactList>
              } ></Route>
 
@@ -235,7 +295,11 @@ searchContacts={this.searchContacts.bind(this)}>
       render={()=>
         <FavoriteItem
         DataContact={this.state.List}
-        changeFavorite={this.changeFavorite.bind(this)}></FavoriteItem>
+        Groups={this.state.Groups}
+        changeFavorite={this.changeFavorite.bind(this)}
+        removeContact={this.removeContact.bind(this)}
+        editContact={this.editContact.bind(this)}
+        changeGroup={this.changeGroup}></FavoriteItem>
        }>
       </Route>
 
@@ -256,6 +320,32 @@ SaveEditContact={this.SaveEditContact}
 >
   
 </EditContact>}>
+   
+</Route>
+
+<Route path="/groups"
+exact
+ render={()=>
+<GroupsPanel
+ DataContact={this.state.List}
+ Groups={this.state.Groups}
+ changeFavorite={this.changeFavorite.bind(this)}
+ removeContact={this.removeContact.bind(this)}
+ editContact={this.editContact.bind(this)}
+ changeGroup={this.changeGroup}
+>
+  
+</GroupsPanel>}>
+   
+</Route>
+<Route path="/addgroups"
+exact
+ render={()=>
+<AddGroup
+addGroup={this.addGroup.bind(this)}
+>
+  
+</AddGroup>}>
    
 </Route>
 <Route path="*"

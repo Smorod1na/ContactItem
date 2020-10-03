@@ -2,7 +2,7 @@ import React, { Fragment } from "react";
 import ContactItem from "../ContactItem";
 import "./ContactList.css";
 
-const ContactList=({DataContact,changeFavorite,removeContact,editContact})=>{
+const ContactList=({DataContact,Groups,changeFavorite,removeContact,editContact,changeGroup})=>{
 
 let contact;
 if(DataContact!=null)
@@ -19,9 +19,12 @@ if(DataContact!=null)
         gender={item.gender}
         avatar={item.avatar}
         isFavorite={item.isFavorite}
+        group={item.group}
 changeFavorite={()=>changeFavorite(item.id)}
 removeContact={()=>removeContact(item.id)}
 editContact={()=>editContact(item.id)}
+Groups={Groups}
+changeGroup={changeGroup}
         ></ContactItem>
         );}
     }

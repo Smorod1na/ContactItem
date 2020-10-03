@@ -1,6 +1,8 @@
 import React, { Component, Fragment } from "react";
 import "./ContactItem.css";
 import {Link} from "react-router-dom"
+import GroupsList from "./GroupsList/GroupsList";
+
 class ContactItem extends Component{
     
     state={
@@ -11,7 +13,10 @@ class ContactItem extends Component{
         address:this.props.address,
         gender:this.props.gender,
         avatar:this.props.avatar,
-        isFavorite:this.props.isFavorite
+        isFavorite:this.props.isFavorite,
+        Contactgroup:this.props.Contactgroup,
+        Groups:this.props.Groups,
+        group:this.props.group
 }
     
 setRandomImage(){
@@ -33,7 +38,7 @@ setRandomImage(){
 
     render(){
 
-   const{name,email,avatar,phone,address,gender}=this.state;
+   const{name,email,avatar,phone,address,gender,Groups}=this.state;
    const url_Image=`https://randomuser.me/api/portraits/${gender}/${avatar}.jpg`
 
    let class_star="fas fa-star fa-2x icon";
@@ -58,6 +63,14 @@ if(this.props.isFavorite==false)
                 <Link to="/editContact">
                 <i className="fas fa-edit fa-2x edit" onClick={this.props.editContact}></i>
                 </Link>
+                </div>
+                <div>
+                <GroupsList Groups={this.props.Groups}
+                Contactgroup={this.props.group}
+                id={this.props.id}
+                changeGroup={this.props.changeGroup}>
+                    
+                </GroupsList>
                 </div>
             </div>
         </Fragment>
